@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatMoney } from "../utils/format";
+import { removerLancamento, atualizarLancamento, getLancamentos } from "../services/storage";
 
 export default function ListaDespesas({ lancamentos = [], atualizar }) {
   const [editIndex, setEditIndex] = useState(null);
@@ -17,18 +18,18 @@ export default function ListaDespesas({ lancamentos = [], atualizar }) {
   }
 
   function salvar(id) {
-    atualizar(
-      lancamentos.map(l =>
-        l.id === id
-          ? { ...l, descricao, valor: Number(valor) }
-          : l
-      )
-    );
+    atualizarLancamento(id, { descricao, valor: Number(valor) });
+    atualizar(getLancamentos());
     setEditIndex(null);
   }
 
   function remover(id) {
-    atualizar(lancamentos.filter(l => l.id !== id));
+    // Pergunta antes de remover
+    const confirmar = window.confirm("Tem certeza que deseja remover este item?");
+    if (!confirmar) return; // Sai se o usuário cancelar
+
+    removerLancamento(id);          // Remove do storage
+    atualizar(getLancamentos());    // Atualiza a lista na tela
   }
 
   const total = despesas.reduce((s, l) => s + l.valor, 0);
@@ -63,7 +64,6 @@ export default function ListaDespesas({ lancamentos = [], atualizar }) {
               </span>
 
               <span>
-                
                 <button onClick={() => iniciarEdicao(l.id, l)}>✏️</button>
                 <button onClick={() => remover(l.id)}>❌</button>
               </span>
@@ -73,7 +73,7 @@ export default function ListaDespesas({ lancamentos = [], atualizar }) {
       ))}
 
       <div className="total">
-        Total: <strong>{formatMoney(-1*total)}</strong>
+        Total: <strong>{formatMoney(-1 * total)}</strong>
       </div>
     </div>
   );

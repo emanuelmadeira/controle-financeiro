@@ -83,6 +83,7 @@ form button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  
 }
 
 form button:hover {
@@ -120,6 +121,10 @@ form button:hover {
 @media (max-width: 600px) {
   form {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .form button{
+     font-size: 1.3rem;
   }
 }
 body.dark {

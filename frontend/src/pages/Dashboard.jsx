@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { listarLancamentos } from "../services/api";
+
 
 // Lancamentos (receitas / despesas)
 import { getLancamentos } from "../services/storage";
 import FormLancamento from "../components/FormLancamento";
-import ListaLancamentos from "../components/ListaLancamentos";
 import Resumo from "../components/Resumo";
 
 // Contas fixas
 import { getContasFixas } from "../services/contasFixas";
-import FormContaFixa from "../components/FormContaFixa";
 import ListaContasFixas from "../components/ListaContasFixas";
 import ListaReceitas from "../components/ListaReceitas";
 import ListaDespesas from "../components/ListaDespesas";
@@ -16,9 +16,14 @@ import ListaDespesas from "../components/ListaDespesas";
 import { getTheme, setTheme } from "../services/theme";
 
 export default function Dashboard() {
-  const [lancamentos, setLancamentos] = useState([]);
+  
   const [contasFixas, setContasFixas] = useState([]);
   const [theme, setThemeState] = useState(getTheme());
+  const [lancamentos, setLancamentos] = useState([]);
+
+  useEffect(() => {
+    listarLancamentos().then(setLancamentos);
+  }, []);
 
   useEffect(() => {
     setLancamentos(getLancamentos());
@@ -46,19 +51,17 @@ export default function Dashboard() {
       <Resumo lancamentos={lancamentos} contasFixas={contasFixas} />
 
       {/* Lançamentos */}
-      <FormLancamento atualizar={setLancamentos} />
-      <ListaLancamentos
-        lancamentos={lancamentos}
-        atualizar={setLancamentos}
+      <FormLancamento
+        atualizarLancamentos={setLancamentos}
+        atualizarContas={setContasFixas}
       />
 
       {/* Contas Fixas */}
-      <FormContaFixa atualizar={setContasFixas} />
       <ListaContasFixas
         contas={contasFixas}
         atualizar={setContasFixas}
       />
-        <ListaReceitas
+      <ListaReceitas
         lancamentos={lancamentos}
         atualizar={setLancamentos}
       />

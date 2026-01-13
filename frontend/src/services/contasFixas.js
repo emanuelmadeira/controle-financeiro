@@ -1,3 +1,4 @@
+// contasFixas.js
 const KEY = "contasFixas";
 
 export function getContasFixas() {
@@ -11,14 +12,16 @@ export function salvarContaFixa(conta) {
   localStorage.setItem(KEY, JSON.stringify(lista));
 }
 
-export function removerContaFixa(index) {
-  const lista = getContasFixas();
-  lista.splice(index, 1);
+// remover por ID
+export function removerContaFixa(id) {
+  const lista = getContasFixas().filter(c => c.id !== id);
   localStorage.setItem(KEY, JSON.stringify(lista));
 }
 
-export function atualizarContaFixa(index, novo) {
-  const lista = getContasFixas();
-  lista[index] = { ...lista[index], ...novo };
+// atualizar por ID
+export function atualizarContaFixa(id, novo) {
+  const lista = getContasFixas().map(c =>
+    c.id === id ? { ...c, ...novo } : c
+  );
   localStorage.setItem(KEY, JSON.stringify(lista));
 }

@@ -14,18 +14,22 @@ export default function FormLancamento({
     e.preventDefault();
     if (!descricao || valor === "") return;
 
-    if (tipo === "fixa") {
+    if (tipo === "conta-fixa") {
       salvarContaFixa({
+        id: Date.now(),
         descricao,
         valor: Number(valor)
       });
+
       atualizarContas(getContasFixas());
     } else {
       salvarLancamento({
+        id: Date.now(),
         descricao,
         valor: Number(valor),
-        tipo
+        tipo // receita | despesa
       });
+
       atualizarLancamentos(getLancamentos());
     }
 
@@ -51,13 +55,10 @@ export default function FormLancamento({
         required
       />
 
-      <select
-        value={tipo}
-        onChange={e => setTipo(e.target.value)}
-      >
-        <option value="receita">Recebido</option>
+      <select value={tipo} onChange={e => setTipo(e.target.value)}>
+        <option value="receita">Receita</option>
         <option value="despesa">Despesa</option>
-        <option value="fixa">Conta fixa</option>
+        <option value="conta-fixa">Conta fixa</option>
       </select>
 
       <button type="submit">Adicionar</button>
